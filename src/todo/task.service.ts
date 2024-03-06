@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 
 import { Task } from './task.model';
@@ -17,5 +17,13 @@ export class TaskService {
 
   create(task: Partial<CreateTaskDto>): Promise<Task> {
     return this.taskRepository.create(task);
+  }
+
+  async deleteOne(id: number): Promise<any> {
+    const task = await this.taskRepository.findByPk(id);
+    if (!task) {
+      throw new NotFoundException('Task does not exist');
+    }
+    return await task.destroy();
   }
 }

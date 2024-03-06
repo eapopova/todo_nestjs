@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 
 import { TaskService } from './task.service';
 import { Task } from './task.model';
@@ -16,5 +24,23 @@ export class TaskController {
   @Post()
   createTask(@Body() task: CreateTaskDto) {
     return this.taskService.create(task);
+  }
+
+  @Delete(':id')
+  async deleteOneTask(@Param('id') id: string) {
+    try {
+      const deletedTask = await this.taskService.deleteOne(Number(id));
+      if (deletedTask) {
+        return {
+          status: HttpStatus.OK,
+          message: 'Task deleted successfully',
+        };
+      }
+    } catch (error) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        message: error.message,
+      };
+    }
   }
 }
