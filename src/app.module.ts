@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { SequelizeModule } from '@nestjs/sequelize';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { TaskModule } from './todo/task.module';
+import { Task } from './todo/task.model';
 
 @Module({
   imports: [
@@ -17,12 +17,13 @@ import { AppService } from './app.service';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        models: [],
+        models: [Task],
       }),
       inject: [ConfigService],
     }),
+    TaskModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

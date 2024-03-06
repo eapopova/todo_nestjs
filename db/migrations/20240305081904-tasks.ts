@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Tasks', {
@@ -16,7 +14,7 @@ module.exports = {
       isChecked: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: true,
+        defaultValue: false,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -31,7 +29,7 @@ module.exports = {
     });
   },
 
-  down: async (queryInterface) => {
-    await queryInterface.dropTable('Tasks');
+  down: (queryInterface) => {
+    queryInterface.dropTable('Tasks');
   },
 };
