@@ -9,7 +9,7 @@ import {
 @Table
 export class Task extends Model {
   @Column({ allowNull: false })
-  name: string;
+  title: string;
 
   @Column({ defaultValue: false })
   isChecked: boolean;

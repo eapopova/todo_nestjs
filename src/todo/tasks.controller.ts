@@ -3,14 +3,17 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
+  ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 
 import { TaskService } from './task.service';
 import { Task } from './task.model';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
+import { UpdateTasksDto } from './dto/update-tasks.dto';
 
 @Controller('tasks')
 export class TaskController {
@@ -26,21 +29,30 @@ export class TaskController {
     return this.taskService.create(task);
   }
 
+  @Delete('checked')
+  deleteSelectedTasks() {
+    return this.taskService.deleteTasks();
+  }
+
   @Delete(':id')
-  async deleteOneTask(@Param('id') id: string) {
-    try {
-      const deletedTask = await this.taskService.deleteOne(Number(id));
-      if (deletedTask) {
-        return {
-          status: HttpStatus.OK,
-          message: 'Task deleted successfully',
-        };
-      }
-    } catch (error) {
-      return {
-        status: HttpStatus.BAD_REQUEST,
-        message: error.message,
-      };
-    }
+  deleteOneTask(
+    @Param('id', new ParseIntPipe())
+    id: number,
+  ) {
+    return this.taskService.deleteOneTask(id);
+  }
+
+  @Patch()
+  toggleTasks(@Body() updateTasks: UpdateTasksDto) {
+    return this.taskService.updateTasks(updateTasks);
+  }
+
+  @Patch(':id')
+  updateOneTask(
+    @Param('id', new ParseIntPipe())
+    id: number,
+    @Body() task: UpdateTaskDto,
+  ) {
+    return this.taskService.updateOneTask(id, task);
   }
 }

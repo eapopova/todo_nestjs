@@ -1,9 +1,14 @@
 import { Transform, TransformFnParams } from 'class-transformer';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateTaskDto {
+export class UpdateTaskDto {
   @IsNotEmpty({ message: 'Task should not be empty' })
   @IsString({ message: 'Task should be a string' })
+  @IsOptional()
   @Transform(({ value }: TransformFnParams) => value.trim())
-  title: string;
+  title?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isChecked?: boolean;
 }
