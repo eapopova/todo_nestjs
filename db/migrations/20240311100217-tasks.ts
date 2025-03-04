@@ -1,6 +1,6 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Tasks', {
+    await queryInterface.createTable('tasks', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -11,17 +11,17 @@ module.exports = {
         allowNull: false,
         validate: { notEmpty: true, notNull: true },
       },
-      isChecked: {
+      checked: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: false,
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: new Date(),
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: new Date(),
@@ -30,6 +30,6 @@ module.exports = {
   },
 
   down: (queryInterface) => {
-    queryInterface.dropTable('Tasks');
+    queryInterface.dropTable('tasks');
   },
 };

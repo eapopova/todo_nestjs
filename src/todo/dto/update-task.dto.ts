@@ -10,5 +10,5 @@ export class UpdateTaskDto {
 
   @IsBoolean()
   @IsOptional()
-  isChecked?: boolean;
+  checked?: boolean;
 }

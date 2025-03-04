@@ -23,7 +23,5 @@ import { Task } from './todo/task.model';
     }),
     TaskModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
