@@ -10,7 +10,7 @@ import { Task } from './task.model';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { UpdateTasksDto } from './dto/update-tasks.dto';
-import { ApiResponse } from '../types';
+import { CustomApiResponse } from '../types';
 
 @Injectable()
 export class TaskService {
@@ -38,7 +38,7 @@ export class TaskService {
     }
   }
 
-  async deleteOneTask(id: number): Promise<ApiResponse> {
+  async deleteOneTask(id: number): Promise<CustomApiResponse> {
     try {
       const deletedRows = await this.taskRepository.destroy({
         where: { id },
@@ -77,7 +77,7 @@ export class TaskService {
     }
   }
 
-  async deleteTasks(): Promise<ApiResponse> {
+  async deleteTasks(): Promise<CustomApiResponse> {
     try {
       const tasks = await this.taskRepository.findAll();
       const checkedTaskIds = tasks
@@ -99,7 +99,7 @@ export class TaskService {
     }
   }
 
-  async updateTasks(updateTasks: UpdateTasksDto): Promise<ApiResponse> {
+  async updateTasks(updateTasks: UpdateTasksDto): Promise<CustomApiResponse> {
     try {
       const [count] = await this.taskRepository.update(
         { checked: updateTasks.isAllTasksChecked },
