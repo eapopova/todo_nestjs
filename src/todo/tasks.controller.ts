@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -15,23 +17,26 @@ import { Task } from './task.model';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { UpdateTasksDto } from './dto/update-tasks.dto';
+import { ApiResponse } from '../types';
 
 @Controller('tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Get()
-  getAllTasks(): Promise<Task[]> {
-    return this.taskService.findAll();
+  @HttpCode(HttpStatus.OK)
+  fetchTasks(): Promise<Task[]> {
+    return this.taskService.findAllTasks();
   }
 
   @Post()
-  createTask(@Body() task: CreateTaskDto) {
-    return this.taskService.create(task);
+  @HttpCode(HttpStatus.CREATED)
+  createTask(@Body() task: CreateTaskDto): Promise<Task> {
+    return this.taskService.addNewTask(task);
   }
 
   @Delete('checked')
-  deleteSelectedTasks() {
+  deleteCompletedTasks(): Promise<ApiResponse> {
     return this.taskService.deleteTasks();
   }
 
@@ -39,12 +44,12 @@ export class TaskController {
   deleteOneTask(
     @Param('id', new ParseIntPipe())
     id: number,
-  ) {
+  ): Promise<ApiResponse> {
     return this.taskService.deleteOneTask(id);
   }
 
   @Patch()
-  toggleTasks(@Body() updateTasks: UpdateTasksDto) {
+  updateAllTasks(@Body() updateTasks: UpdateTasksDto) {
     return this.taskService.updateTasks(updateTasks);
   }
 
@@ -53,7 +58,7 @@ export class TaskController {
     @Param('id', new ParseIntPipe())
     id: number,
     @Body() task: UpdateTaskDto,
-  ) {
+  ): Promise<Task> {
     return this.taskService.updateOneTask(id, task);
   }
 }

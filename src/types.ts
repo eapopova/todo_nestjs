@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
-export type HttpStatusOk = {
-  status: HttpStatus.OK;
+export type ApiResponse<T = any> = {
+  status: HttpStatus;
   message: string;
+  data?: T;
 };
