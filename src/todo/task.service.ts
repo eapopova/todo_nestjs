@@ -17,6 +17,7 @@ export class TaskService {
   findAll(): Promise<Task[]> {
     return this.taskRepository.findAll({
       order: ['createdAt'],
+      attributes: ['id', 'title', 'checked', 'createdAt', 'updatedAt'],
     });
   }
 
@@ -42,23 +43,26 @@ export class TaskService {
     taskIdToUpdate: number,
     updatedTask: UpdateTaskDto,
   ): Promise<Task> {
-    const task = await this.taskRepository.update(updatedTask, {
-      returning: true,
-      where: { id: taskIdToUpdate },
-    });
-    if (!task[1][0]) {
+    const [countUpdatedTasks, updatedTasks] = await this.taskRepository.update(
+      updatedTask,
+      {
+        returning: true,
+        where: { id: taskIdToUpdate },
+      },
+    );
+    if (countUpdatedTasks === 0) {
       throw new BadRequestException({
         status: HttpStatus.BAD_REQUEST,
         message: 'Task does not exist',
       });
     }
-    return task[1][0];
+    return updatedTasks[0];
   }
 
   async deleteTasks(): Promise<HttpStatusOk> {
     const tasks = await this.taskRepository.findAll();
     const deletedTasksIds = tasks
-      .filter(({ dataValues }) => dataValues.isChecked)
+      .filter(({ dataValues }) => dataValues.checked)
       .map(({ dataValues }) => dataValues.id);
     if (deletedTasksIds.length === 0) {
       throw new BadRequestException({
@@ -74,13 +78,13 @@ export class TaskService {
   }
 
   async updateTasks(updateTasks: UpdateTasksDto): Promise<HttpStatusOk> {
-    const updatedTasks = await this.taskRepository.update(
-      { isChecked: updateTasks.isAllTasksChecked },
+    const [countUpdatedTasks] = await this.taskRepository.update(
+      { checked: updateTasks.isAllTasksChecked },
       {
-        where: { isChecked: !updateTasks.isAllTasksChecked },
+        where: { checked: !updateTasks.isAllTasksChecked },
       },
     );
-    if (!updatedTasks.pop()) {
+    if (countUpdatedTasks === 0) {
       throw new BadRequestException({
         status: HttpStatus.BAD_REQUEST,
         message: 'No tasks changed',
